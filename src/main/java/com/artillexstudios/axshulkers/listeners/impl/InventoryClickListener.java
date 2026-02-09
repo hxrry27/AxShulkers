@@ -84,7 +84,7 @@ public class InventoryClickListener implements Listener {
         MessageUtils.sendMsgP(event.getPlayer(), "close.message", Collections.singletonMap("%name%", shulker.getTitle()));
 
         if (!MESSAGES.getString("close.sound", "").isBlank()) {
-            ((Player) event.getPlayer()).playSound(event.getPlayer().getLocation(), Sound.valueOf(MESSAGES.getString("close.sound")), 1f, 1f);
+            ((Player) event.getPlayer()).playSound(event.getPlayer().getLocation(), Sound.valueOf(MESSAGES.getString("close.sound")), org.bukkit.SoundCategory.BLOCKS, 1f, 1f);
         }
 
         ShulkerUtils.setShulkerContents(shulker.getItem(), event.getPlayer().getOpenInventory().getTopInventory(), false);
