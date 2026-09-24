@@ -20,15 +20,15 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.artillexstudios.axshulkers.AxShulkers.CONFIG;
 import static com.artillexstudios.axshulkers.AxShulkers.MESSAGES;
 
 public class ShulkerOpenListener implements Listener {
-    private final HashMap<UUID, Long> cds = new HashMap<>();
+    private final Map<UUID, Long> cds = new ConcurrentHashMap<>();
 
     @EventHandler
     public void onInteract(@NotNull PlayerInteractEvent event) {
@@ -128,8 +128,13 @@ public class ShulkerOpenListener implements Listener {
 
             MessageUtils.sendMsgP(player, "open.message", Collections.singletonMap("%name%", shulkerbox.getTitle()));
 
-            if (!MESSAGES.getString("open.sound", "").isBlank()) {
-                player.playSound(player.getLocation(), Sound.valueOf(MESSAGES.getString("open.sound")), org.bukkit.SoundCategory.BLOCKS, 1f, 1f);
+            final String soundName = MESSAGES.getString("open.sound", "");
+            if (!soundName.isBlank()) {
+                try {
+                    player.playSound(player.getLocation(), Sound.valueOf(soundName), org.bukkit.SoundCategory.BLOCKS, 1f, 1f);
+                } catch (IllegalArgumentException ex) {
+                    AxShulkers.getInstance().getLogger().warning("Invalid 'open.sound' in messages config: '" + soundName + "' is not a valid sound name.");
+                }
             }
         });
         return true;

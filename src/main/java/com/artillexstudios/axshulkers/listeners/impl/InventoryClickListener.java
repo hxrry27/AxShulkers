@@ -83,8 +83,13 @@ public class InventoryClickListener implements Listener {
 
         MessageUtils.sendMsgP(event.getPlayer(), "close.message", Collections.singletonMap("%name%", shulker.getTitle()));
 
-        if (!MESSAGES.getString("close.sound", "").isBlank()) {
-            ((Player) event.getPlayer()).playSound(event.getPlayer().getLocation(), Sound.valueOf(MESSAGES.getString("close.sound")), org.bukkit.SoundCategory.BLOCKS, 1f, 1f);
+        final String soundName = MESSAGES.getString("close.sound", "");
+        if (!soundName.isBlank()) {
+            try {
+                ((Player) event.getPlayer()).playSound(event.getPlayer().getLocation(), Sound.valueOf(soundName), org.bukkit.SoundCategory.BLOCKS, 1f, 1f);
+            } catch (IllegalArgumentException ex) {
+                AxShulkers.getInstance().getLogger().warning("Invalid 'close.sound' in messages config: '" + soundName + "' is not a valid sound name.");
+            }
         }
 
         ShulkerUtils.setShulkerContents(shulker.getItem(), event.getPlayer().getOpenInventory().getTopInventory(), false);
